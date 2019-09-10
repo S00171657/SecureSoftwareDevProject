@@ -5,18 +5,29 @@ namespace SecureSoftwareDevProject
 {
     class Program
     {
-        static private List<Vehicle> vehicles;
 
         static void Main(string[] args)
         {
-            Print();
+            Method method = new Method();
+
+            method.CreateData();
+            method.Print();
 
             Console.ReadLine();
         }
+    }
 
-        static public void CreateData()
+    class Method
+    {
+
+        private List<Vehicle> vehicles;
+        private List<Car> cars;
+        private List<Van> vans;
+        private List<Motorbike> motorbikes;
+
+        public void CreateData()
         {
-            vehicles = new List<Vehicle>()
+            cars = new List<Car>()
             {
                 new Car()
                 {
@@ -51,9 +62,12 @@ namespace SecureSoftwareDevProject
                     EngineSize = 3.5f,
                     BodyType = "Sedan"
                 },
+            };
+
+            vans = new List<Van>() {
                 new Van()
                 {
-                    ID = 4,
+                    ID = 1,
                     Make = "Ford",
                     Model = "Transit",
                     Colour = "Silver",
@@ -64,7 +78,7 @@ namespace SecureSoftwareDevProject
                 },
                 new Van()
                 {
-                    ID = 5,
+                    ID = 2,
                     Make = "GMC",
                     Model = "Savana Cargo",
                     Colour = "Blue",
@@ -75,7 +89,7 @@ namespace SecureSoftwareDevProject
                 },
                 new Van()
                 {
-                    ID = 6,
+                    ID = 3,
                     Make = "Mercedes-Benz",
                     Model = "Sprinter",
                     Colour = "Black",
@@ -84,9 +98,12 @@ namespace SecureSoftwareDevProject
                     EngineSize = 2.1f,
                     Wheelbase = "Large"
                 },
+                };
+
+            motorbikes = new List<Motorbike>() {
                 new Motorbike()
                 {
-                    ID = 7,
+                    ID = 1,
                     Make = "Harley-Davidson",
                     Model = "Softail Slim",
                     Colour = "Blue",
@@ -96,7 +113,7 @@ namespace SecureSoftwareDevProject
                 },
                 new Motorbike()
                 {
-                    ID = 8,
+                    ID = 2,
                     Make = "Yamaha",
                     Model = "R1",
                     Colour = "Red",
@@ -106,7 +123,7 @@ namespace SecureSoftwareDevProject
                 },
                 new Motorbike()
                 {
-                    ID = 9,
+                    ID = 3,
                     Make = "Honda",
                     Model = "Goldwing",
                     Colour = "Black",
@@ -117,16 +134,233 @@ namespace SecureSoftwareDevProject
             };
         }
 
-        static public void Print()
+        public void Print()
         {
-            CreateData();
+            Console.WriteLine("1. View Table \n2. Add Entry \n3. Exit\n");
 
-            string table = "{0, -5}{1, -15}{2, -15}{3, -15}{4, -15}{5, -15}{6, -15}";
+            Console.Write("Option: ");
 
-            foreach (var v in vehicles)
+            int option = int.Parse(Console.ReadLine());
+
+            Console.Clear();
+
+            if (option == 1)
             {
-                Console.WriteLine(v.ID.ToString(), v.Make, v.Model, v.Colour, v.Year, v.Price, v.EngineSize, table);
+                PrintTable();
             }
+            else if(option == 2)
+            {
+                AddEntry();
+            }
+            else if(option == 3)
+            {
+                Environment.Exit(0);
+            }
+            
+
+        }
+
+        public void PrintTable()
+        {
+            string table = "|{0, -3}|{1, -15}|{2, -15}|{3, -15}|{4, -15}|{5, -15}|{6, -15}|{7, -15}|";
+
+            Console.WriteLine("--CARS--");
+
+            Console.WriteLine(String.Format(table, "ID", "MAKE", "Model", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "BODY-TYPE"));
+
+            Console.WriteLine();
+
+            foreach (Car c in cars)
+            {
+                Console.WriteLine(String.Format(table, c.ID, c.Make, c.Model, c.Colour, c.Year, c.Price, c.EngineSize, c.BodyType));
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine("--VANS--");
+
+            Console.WriteLine(String.Format(table, "ID", "MAKE", "Model", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "WHEELBASE"));
+
+            Console.WriteLine();
+
+            foreach (Van v in vans)
+            {
+                Console.WriteLine(String.Format(table, v.ID, v.Make, v.Model, v.Colour, v.Year, v.Price, v.EngineSize, v.Wheelbase));
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine("--MOTORBIKES--");
+
+            Console.WriteLine(String.Format(table, "ID", "MAKE", "Model", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "TYPE"));
+
+            Console.WriteLine();
+
+            foreach (Motorbike m in motorbikes)
+            {
+                Console.WriteLine(String.Format(table, m.ID, m.Make, m.Model, m.Colour, m.Year, m.Price, m.EngineSize, m.Type));
+            }
+
+            Console.WriteLine("\n1: Add Vehicle   2.Edit Vehicle   3.Delete Vehicle   4.Read txt File   0. Exit");
+
+            Console.Write("\nOption: ");
+            int option = int.Parse(Console.ReadLine());
+
+            Console.Clear();
+
+            if(option == 1)
+            {
+                AddEntry();
+            }
+            else if (option == 2)
+            {
+                EditVehicle();
+            }
+            else if (option == 3)
+            {
+                DeleteVehicle();
+            }
+            else if (option == 0)
+            {
+                Environment.Exit(0);
+            }
+        }
+
+        public void AddEntry()
+        {
+            Console.WriteLine("What type of vehicle do you want to add?\n1.Car  2.Van   3.Motorbike");
+
+            Console.Write("\nOption: ");
+
+            int option = int.Parse(Console.ReadLine());
+
+            Console.Clear();
+
+            if(option == 1)
+            {
+                Console.WriteLine("--CAR--\n");
+
+                Car c = new Car();
+
+                c.ID = cars.Count + 1;
+
+                Console.Write("Make: ");
+                c.Make = Console.ReadLine();
+
+                Console.Write("Model: ");
+                c.Model = Console.ReadLine();
+
+                Console.Write("Colour: ");
+                c.Colour = Console.ReadLine();
+
+                Console.Write("Year: ");
+                c.Year = int.Parse(Console.ReadLine());
+
+                Console.Write("Price: ");
+                c.Price = float.Parse(Console.ReadLine());
+
+                Console.Write("Engine-Size: ");
+                c.EngineSize = float.Parse(Console.ReadLine());
+
+                Console.Write("Body-Type: ");
+                c.BodyType = Console.ReadLine();
+
+                cars.Add(c);
+            }
+            else if (option == 2)
+            {
+                Console.WriteLine("--VAN--\n");
+
+                Van v = new Van();
+
+                v.ID = vans.Count + 1;
+
+                Console.Write("Make: ");
+                v.Make = Console.ReadLine();
+
+                Console.Write("Model: ");
+                v.Model = Console.ReadLine();
+
+                Console.Write("Colour: ");
+                v.Colour = Console.ReadLine();
+
+                Console.Write("Year: ");
+                v.Year = int.Parse(Console.ReadLine());
+
+                Console.Write("Price: ");
+                v.Price = float.Parse(Console.ReadLine());
+
+                Console.Write("Engine-Size: ");
+                v.EngineSize = float.Parse(Console.ReadLine());
+
+                Console.Write("Wheel-base: ");
+                v.Wheelbase = Console.ReadLine();
+
+                vans.Add(v);
+            }
+            else if (option == 3)
+            {
+                Console.WriteLine("--MOTORBIKE--\n");
+
+                Motorbike m = new Motorbike();
+
+                m.ID = vans.Count + 1;
+
+                Console.Write("Make: ");
+                m.Make = Console.ReadLine();
+
+                Console.Write("Model: ");
+                m.Model = Console.ReadLine();
+
+                Console.Write("Colour: ");
+                m.Colour = Console.ReadLine();
+
+                Console.Write("Year: ");
+                m.Year = int.Parse(Console.ReadLine());
+
+                Console.Write("Price: ");
+                m.Price = float.Parse(Console.ReadLine());
+
+                Console.Write("Engine-Size: ");
+                m.EngineSize = float.Parse(Console.ReadLine());
+
+                Console.Write("Type: ");
+                m.Type = Console.ReadLine();
+
+                motorbikes.Add(m);
+            }
+
+            Console.Clear();
+
+            PrintTable();
+        }
+
+        public void EditVehicle()
+        {
+            Console.WriteLine("What type of vehicle do you want to edit?\n1.Car  2.Van   3.Motorbike");
+
+            Console.Write("\nOption: ");
+
+            int option = int.Parse(Console.ReadLine());
+
+            if(option == 1)
+            {
+                Console.Write("\nEnter the car's ID number: ");
+                int id = int.Parse(Console.ReadLine());
+
+                foreach(Car car in cars)
+                {
+                    if(car.ID == id)
+                    {
+                        cars.Remove(car);
+                    }
+                }
+            }
+        }
+
+        public void DeleteVehicle()
+        {
+
         }
     }
 }
