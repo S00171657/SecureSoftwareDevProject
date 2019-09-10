@@ -20,7 +20,7 @@ namespace SecureSoftwareDevProject
     class Method
     {
 
-        private List<Vehicle> vehicles;
+        //private List<Vehicle> vehicles;
         private List<Car> cars;
         private List<Van> vans;
         private List<Motorbike> motorbikes;
@@ -206,7 +206,7 @@ namespace SecureSoftwareDevProject
             Console.Write("\nOption: ");
             int option = int.Parse(Console.ReadLine());
 
-            Console.Clear();
+            Console.WriteLine();
 
             if(option == 1)
             {
@@ -348,19 +348,113 @@ namespace SecureSoftwareDevProject
                 Console.Write("\nEnter the car's ID number: ");
                 int id = int.Parse(Console.ReadLine());
 
-                foreach(Car car in cars)
+                foreach (Car car in cars)
                 {
                     if(car.ID == id)
+                    {
+                        Console.Write("\nWhat field do you want to edit?\n1. Make\n2. Model\n3. Colour\n4. Year\n5. Price\n6.Engine-Size\n7. Body-Type\nOption: ");
+                        int opt = int.Parse(Console.ReadLine());
+
+                        Console.Write("\nNew field: ");
+                        string field = Console.ReadLine();
+
+                        if(opt == 1)
+                        {
+                            car.Make = field;
+                        }
+                        else if (opt == 2)
+                        {
+                            car.Model = field;
+                        }
+                        else if (opt == 3)
+                        {
+                            car.Colour = field;
+                        }
+                        else if (opt == 4)
+                        {
+                            car.Year = int.Parse(field);
+                        }
+                        else if (opt == 5)
+                        {
+                            car.Price = float.Parse(field);
+                        }
+                        else if (opt == 6)
+                        {
+                            car.EngineSize = float.Parse(field);
+                        }
+                        else if (opt == 7)
+                        {
+                            car.BodyType = field;
+                        }
+                    }
+                }
+            }
+            else if (option == 2)
+            {
+                Console.Write("\nEnter the van's ID number: ");
+                int id = int.Parse(Console.ReadLine());
+            }
+            else if (option == 3)
+            {
+                Console.Write("\nEnter the motorbikes's ID number: ");
+                int id = int.Parse(Console.ReadLine());
+            }
+
+            Console.Clear();
+
+            PrintTable();
+        }
+
+        public void DeleteVehicle()
+        {
+            Console.WriteLine("What type of vehicle do you want to delete?\n1.Car  2.Van   3.Motorbike");
+
+            Console.Write("\nOption: ");
+
+            int option = int.Parse(Console.ReadLine());
+
+            if (option == 1)
+            {
+                Console.Write("\nEnter the car's ID number: ");
+                int id = int.Parse(Console.ReadLine());
+
+                foreach (Car car in cars)
+                {
+                    if (car.ID == id)
                     {
                         cars.Remove(car);
                     }
                 }
             }
-        }
+            else if (option == 2)
+            {
+                Console.Write("\nEnter the van's ID number: ");
+                int id = int.Parse(Console.ReadLine());
 
-        public void DeleteVehicle()
-        {
+                foreach (Van van in vans)
+                {
+                    if (van.ID == id)
+                    {
+                        vans.Remove(van);
+                    }
+                }
+            }
+            else if (option == 3)
+            {
+                Console.Write("\nEnter the motorbikes's ID number: ");
+                int id = int.Parse(Console.ReadLine());
 
+                foreach (Motorbike motorbike in motorbikes)
+                {
+                    if (motorbike.ID == id)
+                    {
+                        motorbikes.Remove(motorbike);
+                    }
+                }
+            }
+
+            Console.Clear();
+            PrintTable();
         }
     }
 }
