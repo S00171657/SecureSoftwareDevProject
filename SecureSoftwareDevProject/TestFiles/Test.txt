@@ -1,0 +1,9 @@
+Car,1,Dodge,Challenger,Green,1970,47995,6.2,Coupe
+Car,2,Subaru,Impreza,Blue,2008,2700,2,Hatchback
+Car,3,Mercedes-Benz,E 350,White,2010,10000,3.5,Sedan
+Van,1,Ford,Transit,Silver,2017,14000,2,Regular
+Van,2,GMC,Savana Cargo,Blue,2006,8000,5.3,Regular
+Van,3,Mercedes-Benz,Sprinter,Black,2014,14000,2.1,Large
+Motorbike,1,Harley-Davidson,Softail Slim,Blue,2019,22000,0,Cruiser
+Motorbike,2,Yamaha,R1,Red,2009,6650,0,Sports
+Motorbike,3,Honda,Goldwing,Black,1997,5500,0,Tourer

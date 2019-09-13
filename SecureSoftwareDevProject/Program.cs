@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using static SecureSoftwareDevProject.UserRole;
 
 namespace SecureSoftwareDevProject
@@ -10,48 +11,44 @@ namespace SecureSoftwareDevProject
         static void Main(string[] args)
         {
             Method method = new Method();
-
-            method.CreateData();
+            
             method.Login();
-
-            Console.ReadLine();
         }
     }
 
     class Method
     {
-        //private List<Vehicle> vehicles;
         private List<Car> cars;
         private List<Van> vans;
         private List<Motorbike> motorbikes;
         private List<UserRole> userRoles;
         public UserRole activeUser;
 
-        public void CreateUsers()
+        private void CreateUsers()
         {
             userRoles = new List<UserRole>()
             {
                 new UserRole()
                 {
                     UserName = "JDoe",
-                    Password = "Donedeal1&",
+                    Password = "Donedeal",
                     Position = Role.Admin
                 },
                 new UserRole()
                 {
                     UserName = "WSmith",
-                    Password = "Freshprince2$",
+                    Password = "Freshprince",
                     Position = Role.Manager
                 },
                 new UserRole()
                 {
                     UserName = "ECartman",
-                    Password = "Southpark3%",
+                    Password = "Southpark",
                     Position = Role.Employee
 
                 }
             };
-        }
+        }//Creates List of users and roles
 
         public void Login()
         {
@@ -96,6 +93,7 @@ namespace SecureSoftwareDevProject
                     {
                         Console.Clear();
                         activeUser = u;
+                        CreateData();
                         Menu();
                     }
                 }
@@ -106,9 +104,9 @@ namespace SecureSoftwareDevProject
             }
 
             Console.Write("Credentials entered incorrectly too many times. Press Enter to exit.");
-        }
+        }//Login Screen
 
-        public void CreateData()
+        private void CreateData()
         {
             cars = new List<Car>()
             {
@@ -215,9 +213,9 @@ namespace SecureSoftwareDevProject
                     Type = "Tourer"
                 }
             };
-        }
+        }//Creates list of vehicles
 
-        public void Menu()
+        private void Menu()
         {
             Console.WriteLine("--SECURE SOFTWARE DEVELOPEMENT PROJECT--\n\n1. View Table\n0. Exit\n");
 
@@ -237,15 +235,15 @@ namespace SecureSoftwareDevProject
             }
             
 
-        }
+        }//Menu with view list option and exit application
 
-        public void PrintTable()
+        private void PrintTable()
         {
             string table = "|{0, -3}|{1, -15}|{2, -15}|{3, -15}|{4, -15}|{5, -15}|{6, -15}|{7, -15}|";
 
             Console.WriteLine("--CARS--\n");
 
-            Console.WriteLine(String.Format(table, "ID", "MAKE", "Model", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "BODY-TYPE"));
+            Console.WriteLine(String.Format(table, "ID", "MAKE", "MODEL", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "BODY-TYPE"));
 
             Console.WriteLine();
 
@@ -258,7 +256,7 @@ namespace SecureSoftwareDevProject
 
             Console.WriteLine("--VANS--\n");
 
-            Console.WriteLine(String.Format(table, "ID", "MAKE", "Model", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "WHEELBASE"));
+            Console.WriteLine(String.Format(table, "ID", "MAKE", "MODEL", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "WHEELBASE"));
 
             Console.WriteLine();
 
@@ -271,7 +269,7 @@ namespace SecureSoftwareDevProject
 
             Console.WriteLine("--MOTORBIKES--\n");
 
-            Console.WriteLine(String.Format(table, "ID", "MAKE", "Model", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "TYPE"));
+            Console.WriteLine(String.Format(table, "ID", "MAKE", "MODEL", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "TYPE"));
 
             Console.WriteLine();
 
@@ -283,42 +281,62 @@ namespace SecureSoftwareDevProject
             Console.WriteLine("\nOptions with *()* around it are unavailable to the current user.");
 
             if(activeUser.Position == Role.Admin)
-                Console.WriteLine("\n1: Add Vehicle   2.Edit Vehicle   3.Delete Vehicle   4.Read txt File   0. Exit");
+                Console.WriteLine("\n1: Add Vehicle   2.Edit Vehicle   3.Delete Vehicle   4.Read txt File   5.Save to txt File  0. Exit");
             else if (activeUser.Position == Role.Manager)
-                Console.WriteLine("\n1: Add Vehicle   2.Edit Vehicle   *(3.Delete Vehicle)*   4.Read txt File   0. Exit");
+                Console.WriteLine("\n1: Add Vehicle   2.Edit Vehicle   *(3.Delete Vehicle)*   4.Read txt File   5.Save to txt File  0. Exit");
             else if (activeUser.Position == Role.Employee)
-                Console.WriteLine("\n1: Add Vehicle   *(2.Edit Vehicle)*   *(3.Delete Vehicle)*   4.Read txt File   0. Exit");
+                Console.WriteLine("\n1: Add Vehicle   *(2.Edit Vehicle)*   *(3.Delete Vehicle)*   4.Read txt File   5.Save to txt File  0. Exit");
 
-
-            Console.Write("\nOption: ");
-            int option = int.Parse(Console.ReadLine());
-
-            Console.WriteLine();
-
-            if(option == 1)
+            for (int i = 0; i < 100; i++)
             {
-                AddEntry();
-            }
-            else if (option == 2)
-            {
-                if(activeUser.Position == Role.Admin || activeUser.Position == Role.Manager)
-                    EditVehicle();
+                Console.Write("\nOption: ");
+                int option = int.Parse(Console.ReadLine());
+
+                Console.WriteLine();
+
+                if(option == 1)
+                {
+                    AddVehicle();
+                }
+                else if (option == 2)
+                {
+                    if(activeUser.Position != Role.Employee)
+                    {
+                        EditVehicle();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Unavailable to user");
+                    }
+                }
+                else if (option == 3)
+                {
+                    if (activeUser.Position == Role.Admin)
+                    {
+                        DeleteVehicle();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Unavailable to user");
+                    }
+                }
+                else if(option == 5)
+                {
+                    WriteTextFile();
+                }
+                else if (option == 0)
+                {
+                    Environment.Exit(0);
+                }
                 else
                 {
-                    Console.WriteLine("\nUnavailable to user");
+                    Console.WriteLine("Invalid Option");
                 }
             }
-            else if (option == 3)
-            {
-                DeleteVehicle();
-            }
-            else if (option == 0)
-            {
-                Environment.Exit(0);
-            }
-        }
 
-        public void AddEntry()
+        }//Prints tables of the three different types of vehicles
+
+        private void AddVehicle()
         {
             Console.WriteLine("What type of vehicle do you want to add?\n1.Car  2.Van   3.Motorbike");
 
@@ -425,9 +443,9 @@ namespace SecureSoftwareDevProject
             Console.Clear();
 
             PrintTable();
-        }
+        }//Adds new vehicle to list
 
-        public void EditVehicle()
+        private void EditVehicle()
         {
             Console.WriteLine("What type of vehicle do you want to edit?\n1.Car  2.Van   3.Motorbike");
 
@@ -577,9 +595,9 @@ namespace SecureSoftwareDevProject
             Console.Clear();
 
             PrintTable();
-        }
+        }//Edits a vehicle's field
 
-        public void DeleteVehicle()
+        private void DeleteVehicle()
         {
             Console.WriteLine("What type of vehicle do you want to delete?\n1.Car  2.Van   3.Motorbike");
 
@@ -629,6 +647,99 @@ namespace SecureSoftwareDevProject
 
             Console.Clear();
             PrintTable();
+        }//Deletes a vehicle from the list
+
+        private void WriteTextFile()
+        {
+            try
+            {
+
+                //Pass the filepath and filename to the StreamWriter Constructor
+                StreamWriter sw = new StreamWriter("C:/Users/Liam/Documents/GitHub/SecureSoftwareDevProject/SecureSoftwareDevProject/TestFiles/Test.txt");
+
+                foreach (Car c in cars)
+                {
+                    sw.WriteLine(c.GetType().Name
+                        + "," + c.ID
+                        + "," + c.Make
+                        + "," + c.Model
+                        + "," + c.Colour
+                        + "," + c.Year
+                        + "," + c.Price
+                        + "," + c.EngineSize
+                        + "," + c.BodyType);
+                }//Cars
+
+                foreach (Van v in vans)
+                {
+                    sw.WriteLine(v.GetType().Name
+                        + "," + v.ID
+                        + "," + v.Make
+                        + "," + v.Model
+                        + "," + v.Colour
+                        + "," + v.Year
+                        + "," + v.Price
+                        + "," + v.EngineSize
+                        + "," + v.Wheelbase);
+                }//Vans
+
+                foreach (Motorbike m in motorbikes)
+                {
+                    sw.WriteLine(m.GetType().Name
+                        + "," + m.ID
+                        + "," + m.Make
+                        + "," + m.Model
+                        + "," + m.Colour
+                        + "," + m.Year
+                        + "," + m.Price
+                        + "," + m.EngineSize
+                        + "," + m.Type);
+                }//Vans
+
+                //Close the file
+                sw.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception: " + e.Message);
+            }
+            finally
+            {
+                Console.Clear();
+                Console.WriteLine("SAVED TO FILE.");
+                PrintTable();
+            }
+        }//Write list of vehicles to a txt file
+
+        private void ReadTextFile()
+        {
+            
+            try
+            {
+                //Pass the file path and file name to the StreamReader constructor
+                StreamReader sr = new StreamReader("C:/Users/Liam/Documents/GitHub/SecureSoftwareDevProject/SecureSoftwareDevProject/TestFiles/Test.txt");
+
+                //Read the first line of text
+                string line = sr.ReadLine();
+
+                //Continue to read until you reach end of file
+                while (line != null)
+                {
+                    
+                }
+
+                //close the file
+                sr.Close();
+                Console.ReadLine();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception: " + e.Message);
+            }
+            finally
+            {
+                Console.WriteLine("Executing finally block.");
+            }
         }
     }
 }
