@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static SecureSoftwareDevProject.UserRole;
 
 namespace SecureSoftwareDevProject
 {
@@ -11,7 +12,7 @@ namespace SecureSoftwareDevProject
             Method method = new Method();
 
             method.CreateData();
-            method.Print();
+            method.Login();
 
             Console.ReadLine();
         }
@@ -19,11 +20,93 @@ namespace SecureSoftwareDevProject
 
     class Method
     {
-
         //private List<Vehicle> vehicles;
         private List<Car> cars;
         private List<Van> vans;
         private List<Motorbike> motorbikes;
+        private List<UserRole> userRoles;
+        public UserRole activeUser;
+
+        public void CreateUsers()
+        {
+            userRoles = new List<UserRole>()
+            {
+                new UserRole()
+                {
+                    UserName = "JDoe",
+                    Password = "Donedeal1&",
+                    Position = Role.Admin
+                },
+                new UserRole()
+                {
+                    UserName = "WSmith",
+                    Password = "Freshprince2$",
+                    Position = Role.Manager
+                },
+                new UserRole()
+                {
+                    UserName = "ECartman",
+                    Password = "Southpark3%",
+                    Position = Role.Employee
+
+                }
+            };
+        }
+
+        public void Login()
+        {
+            CreateUsers();
+
+            for (int i = 0; i < 5; i++)
+            {
+                Console.WriteLine("--USER LOGIN--\n");
+
+                Console.Write("Username: ");
+                string user = Console.ReadLine();
+
+                Console.Write("Password: ");
+                string password = "";
+                do
+                {
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    // Backspace Should Not Work
+                    if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+                    {
+                        password += key.KeyChar;
+                        Console.Write("*");
+                    }
+                    else
+                    {
+                        if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+                        {
+                            password = password.Substring(0, (password.Length - 1));
+                            Console.Write("\b \b");
+                        }
+                        else if (key.Key == ConsoleKey.Enter)
+                        {
+                            break;
+                        }
+                    }
+                } while (true); //Password Masker
+
+
+                foreach (UserRole u in userRoles)
+                {
+                    if(user == u.UserName && password == u.Password)
+                    {
+                        Console.Clear();
+                        activeUser = u;
+                        Menu();
+                    }
+                }
+
+                Console.Clear();
+
+                Console.WriteLine("Invalid login please try again\n");
+            }
+
+            Console.Write("Credentials entered incorrectly too many times. Press Enter to exit.");
+        }
 
         public void CreateData()
         {
@@ -134,9 +217,9 @@ namespace SecureSoftwareDevProject
             };
         }
 
-        public void Print()
+        public void Menu()
         {
-            Console.WriteLine("1. View Table \n2. Add Entry \n3. Exit\n");
+            Console.WriteLine("--SECURE SOFTWARE DEVELOPEMENT PROJECT--\n\n1. View Table\n0. Exit\n");
 
             Console.Write("Option: ");
 
@@ -148,11 +231,7 @@ namespace SecureSoftwareDevProject
             {
                 PrintTable();
             }
-            else if(option == 2)
-            {
-                AddEntry();
-            }
-            else if(option == 3)
+            else if(option == 0)
             {
                 Environment.Exit(0);
             }
@@ -164,7 +243,7 @@ namespace SecureSoftwareDevProject
         {
             string table = "|{0, -3}|{1, -15}|{2, -15}|{3, -15}|{4, -15}|{5, -15}|{6, -15}|{7, -15}|";
 
-            Console.WriteLine("--CARS--");
+            Console.WriteLine("--CARS--\n");
 
             Console.WriteLine(String.Format(table, "ID", "MAKE", "Model", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "BODY-TYPE"));
 
@@ -177,7 +256,7 @@ namespace SecureSoftwareDevProject
 
             Console.WriteLine();
 
-            Console.WriteLine("--VANS--");
+            Console.WriteLine("--VANS--\n");
 
             Console.WriteLine(String.Format(table, "ID", "MAKE", "Model", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "WHEELBASE"));
 
@@ -190,7 +269,7 @@ namespace SecureSoftwareDevProject
 
             Console.WriteLine();
 
-            Console.WriteLine("--MOTORBIKES--");
+            Console.WriteLine("--MOTORBIKES--\n");
 
             Console.WriteLine(String.Format(table, "ID", "MAKE", "Model", "COLOUR", "YEAR", "PRICE", "ENGINE-SIZE", "TYPE"));
 
@@ -201,7 +280,15 @@ namespace SecureSoftwareDevProject
                 Console.WriteLine(String.Format(table, m.ID, m.Make, m.Model, m.Colour, m.Year, m.Price, m.EngineSize, m.Type));
             }
 
-            Console.WriteLine("\n1: Add Vehicle   2.Edit Vehicle   3.Delete Vehicle   4.Read txt File   0. Exit");
+            Console.WriteLine("\nOptions with *()* around it are unavailable to the current user.");
+
+            if(activeUser.Position == Role.Admin)
+                Console.WriteLine("\n1: Add Vehicle   2.Edit Vehicle   3.Delete Vehicle   4.Read txt File   0. Exit");
+            else if (activeUser.Position == Role.Manager)
+                Console.WriteLine("\n1: Add Vehicle   2.Edit Vehicle   *(3.Delete Vehicle)*   4.Read txt File   0. Exit");
+            else if (activeUser.Position == Role.Employee)
+                Console.WriteLine("\n1: Add Vehicle   *(2.Edit Vehicle)*   *(3.Delete Vehicle)*   4.Read txt File   0. Exit");
+
 
             Console.Write("\nOption: ");
             int option = int.Parse(Console.ReadLine());
@@ -214,7 +301,12 @@ namespace SecureSoftwareDevProject
             }
             else if (option == 2)
             {
-                EditVehicle();
+                if(activeUser.Position == Role.Admin || activeUser.Position == Role.Manager)
+                    EditVehicle();
+                else
+                {
+                    Console.WriteLine("\nUnavailable to user");
+                }
             }
             else if (option == 3)
             {
@@ -393,11 +485,93 @@ namespace SecureSoftwareDevProject
             {
                 Console.Write("\nEnter the van's ID number: ");
                 int id = int.Parse(Console.ReadLine());
+
+                foreach (Van van in vans)
+                {
+                    if (van.ID == id)
+                    {
+                        Console.Write("\nWhat field do you want to edit?\n1. Make\n2. Model\n3. Colour\n4. Year\n5. Price\n6.Engine-Size\n7. Wheelbase\nOption: ");
+                        int opt = int.Parse(Console.ReadLine());
+
+                        Console.Write("\nNew field: ");
+                        string field = Console.ReadLine();
+
+                        if (opt == 1)
+                        {
+                            van.Make = field;
+                        }
+                        else if (opt == 2)
+                        {
+                            van.Model = field;
+                        }
+                        else if (opt == 3)
+                        {
+                            van.Colour = field;
+                        }
+                        else if (opt == 4)
+                        {
+                            van.Year = int.Parse(field);
+                        }
+                        else if (opt == 5)
+                        {
+                            van.Price = float.Parse(field);
+                        }
+                        else if (opt == 6)
+                        {
+                            van.EngineSize = float.Parse(field);
+                        }
+                        else if (opt == 7)
+                        {
+                            van.Wheelbase = field;
+                        }
+                    }
+                }
             }
             else if (option == 3)
             {
                 Console.Write("\nEnter the motorbikes's ID number: ");
                 int id = int.Parse(Console.ReadLine());
+
+                foreach (Motorbike bike in motorbikes)
+                {
+                    if (bike.ID == id)
+                    {
+                        Console.Write("\nWhat field do you want to edit?\n1. Make\n2. Model\n3. Colour\n4. Year\n5. Price\n6.Engine-Size\n7. Type\nOption: ");
+                        int opt = int.Parse(Console.ReadLine());
+
+                        Console.Write("\nNew field: ");
+                        string field = Console.ReadLine();
+
+                        if (opt == 1)
+                        {
+                            bike.Make = field;
+                        }
+                        else if (opt == 2)
+                        {
+                            bike.Model = field;
+                        }
+                        else if (opt == 3)
+                        {
+                            bike.Colour = field;
+                        }
+                        else if (opt == 4)
+                        {
+                            bike.Year = int.Parse(field);
+                        }
+                        else if (opt == 5)
+                        {
+                            bike.Price = float.Parse(field);
+                        }
+                        else if (opt == 6)
+                        {
+                            bike.EngineSize = float.Parse(field);
+                        }
+                        else if (opt == 7)
+                        {
+                            bike.Type = field;
+                        }
+                    }
+                }
             }
 
             Console.Clear();
