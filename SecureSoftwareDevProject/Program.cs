@@ -18,9 +18,11 @@ namespace SecureSoftwareDevProject
 
     class Method
     {
+        //Lists of vehicles
         private List<Car> cars;
         private List<Van> vans;
         private List<Motorbike> motorbikes;
+
         private List<UserRole> userRoles;
         public UserRole activeUser;
 
@@ -320,6 +322,10 @@ namespace SecureSoftwareDevProject
                         Console.WriteLine("Unavailable to user");
                     }
                 }
+                else if(option == 4)
+                {
+                    ReadTextFile();
+                }
                 else if(option == 5)
                 {
                     WriteTextFile();
@@ -610,11 +616,11 @@ namespace SecureSoftwareDevProject
                 Console.Write("\nEnter the car's ID number: ");
                 int id = int.Parse(Console.ReadLine());
 
-                foreach (Car car in cars)
+                for (int i = 0; i < cars.Count; i++)
                 {
-                    if (car.ID == id)
+                    if(cars[i].ID == id)
                     {
-                        cars.Remove(car);
+                        cars.Remove(cars[i]);
                     }
                 }
             }
@@ -623,11 +629,11 @@ namespace SecureSoftwareDevProject
                 Console.Write("\nEnter the van's ID number: ");
                 int id = int.Parse(Console.ReadLine());
 
-                foreach (Van van in vans)
+                for (int i = 0; i < vans.Count; i++)
                 {
-                    if (van.ID == id)
+                    if (vans[i].ID == id)
                     {
-                        vans.Remove(van);
+                        vans.Remove(vans[i]);
                     }
                 }
             }
@@ -636,11 +642,11 @@ namespace SecureSoftwareDevProject
                 Console.Write("\nEnter the motorbikes's ID number: ");
                 int id = int.Parse(Console.ReadLine());
 
-                foreach (Motorbike motorbike in motorbikes)
+                for (int i = 0; i < motorbikes.Count; i++)
                 {
-                    if (motorbike.ID == id)
+                    if (motorbikes[i].ID == id)
                     {
-                        motorbikes.Remove(motorbike);
+                        motorbikes.Remove(motorbikes[i]);
                     }
                 }
             }
@@ -713,24 +719,122 @@ namespace SecureSoftwareDevProject
 
         private void ReadTextFile()
         {
-            
             try
             {
                 //Pass the file path and file name to the StreamReader constructor
-                StreamReader sr = new StreamReader("C:/Users/Liam/Documents/GitHub/SecureSoftwareDevProject/SecureSoftwareDevProject/TestFiles/Test.txt");
-
-                //Read the first line of text
-                string line = sr.ReadLine();
+                StreamReader sr = new StreamReader("C:/Users/Liam/Documents/" +
+                    "GitHub/SecureSoftwareDevProject/" +
+                    "SecureSoftwareDevProject/TestFiles/Test.txt");
 
                 //Continue to read until you reach end of file
-                while (line != null)
+                while (!sr.EndOfStream)
                 {
-                    
+                    bool duplicate = false;
+
+                    string line = sr.ReadLine();
+
+                    string[] fields = line.Split(",");
+
+                    if(fields[0] == "Car")
+                    {
+                        var temp = new Car()
+                        {
+                            ID = int.Parse(fields[1]),
+                            Make = fields[2],
+                            Model = fields[3],
+                            Colour = fields[4],
+                            Year = int.Parse(fields[5]),
+                            Price = float.Parse(fields[6]),
+                            EngineSize = float.Parse(fields[7]),
+                            BodyType = fields[8]
+                        };
+
+                        foreach (var c in cars)
+                        {
+                            if(temp.ID == c.ID)
+                            {
+                                duplicate = true;
+                                break;
+                            }
+                            else
+                            {
+                                duplicate = false;
+                            }
+                        } //Duplicate check
+
+                        if(duplicate == false)
+                        {
+                            cars.Add(temp);
+                        }
+                    }
+                    else if (fields[0] == "Van")
+                    {
+                        var temp = new Van()
+                        {
+                            ID = int.Parse(fields[1]),
+                            Make = fields[2],
+                            Model = fields[3],
+                            Colour = fields[4],
+                            Year = int.Parse(fields[5]),
+                            Price = float.Parse(fields[6]),
+                            EngineSize = float.Parse(fields[7]),
+                            Wheelbase = fields[8]
+                        };
+
+                        foreach (var v in vans)
+                        {
+                            if (temp.ID == v.ID)
+                            {
+                                duplicate = true;
+                                break;
+                            }
+                            else
+                            {
+                                duplicate = false;
+                            }
+                        } //Duplicate check
+                        
+                        if (duplicate == false)
+                        {
+                            vans.Add(temp);
+                        }
+                    }
+                    else if (fields[0] == "Motorbike")
+                    {
+                        var temp = new Motorbike()
+                        {
+                            ID = int.Parse(fields[1]),
+                            Make = fields[2],
+                            Model = fields[3],
+                            Colour = fields[4],
+                            Year = int.Parse(fields[5]),
+                            Price = float.Parse(fields[6]),
+                            EngineSize = float.Parse(fields[7]),
+                            Type = fields[8]
+                        };
+
+                        foreach (var m in motorbikes)
+                        {
+                            if (temp.ID == m.ID)
+                            {
+                                duplicate = true;
+                                break;
+                            }
+                            else
+                            {
+                                duplicate = false;
+                            }
+                        } //Duplicate check
+
+                        if (duplicate == false)
+                        {
+                            motorbikes.Add(temp);
+                        }
+                    }
                 }
 
                 //close the file
                 sr.Close();
-                Console.ReadLine();
             }
             catch (Exception e)
             {
@@ -738,8 +842,10 @@ namespace SecureSoftwareDevProject
             }
             finally
             {
-                Console.WriteLine("Executing finally block.");
+                Console.Clear();
+                Console.WriteLine("FILE READ.");
+                PrintTable();
             }
-        }
+        }//Reads txt file and converts to list of vehicles
     }
 }
