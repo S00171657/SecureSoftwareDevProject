@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using static SecureSoftwareDevProject.UserRole;
 
 namespace SecureSoftwareDevProject
@@ -11,7 +12,7 @@ namespace SecureSoftwareDevProject
         static void Main(string[] args)
         {
             Method method = new Method();
-            
+
             method.Login();
         }
     }
@@ -25,6 +26,8 @@ namespace SecureSoftwareDevProject
 
         private List<UserRole> userRoles;
         public UserRole activeUser;
+
+        private string fileName = @"Test.txt";
 
         private void CreateUsers()
         {
@@ -241,7 +244,7 @@ namespace SecureSoftwareDevProject
 
         private void PrintTable()
         {
-            string table = "|{0, -3}|{1, -15}|{2, -15}|{3, -15}|{4, -15}|{5, -15}|{6, -15}|{7, -15}|";
+            string table = "|{0, -3}|{1, -15}|{2, -15}|{3, -10}|{4, -10}|{5, -15}|{6, -15}|{7, -15}|";
 
             Console.WriteLine("--CARS--\n");
 
@@ -251,7 +254,7 @@ namespace SecureSoftwareDevProject
 
             foreach (Car c in cars)
             {
-                Console.WriteLine(String.Format(table, c.ID, c.Make, c.Model, c.Colour, c.Year, c.Price, c.EngineSize, c.BodyType));
+                Console.WriteLine(String.Format(table, c.ID, c.Make, c.Model, c.Colour, c.Year, String.Format("$ {0:0.00}", c.Price), String.Format("{0:0.0} L", c.EngineSize), c.BodyType));
             }
 
             Console.WriteLine();
@@ -264,7 +267,7 @@ namespace SecureSoftwareDevProject
 
             foreach (Van v in vans)
             {
-                Console.WriteLine(String.Format(table, v.ID, v.Make, v.Model, v.Colour, v.Year, v.Price, v.EngineSize, v.Wheelbase));
+                Console.WriteLine(String.Format(table, v.ID, v.Make, v.Model, v.Colour, v.Year, String.Format("$ {0:0.00}", v.Price), String.Format("{0:0.0} L", v.EngineSize), v.Wheelbase));
             }
 
             Console.WriteLine();
@@ -277,7 +280,7 @@ namespace SecureSoftwareDevProject
 
             foreach (Motorbike m in motorbikes)
             {
-                Console.WriteLine(String.Format(table, m.ID, m.Make, m.Model, m.Colour, m.Year, m.Price, m.EngineSize, m.Type));
+                Console.WriteLine(String.Format(table, m.ID, m.Make, m.Model, m.Colour, m.Year, String.Format("$ {0:0.00}", m.Price), String.Format("{0:0.0} L", m.EngineSize), m.Type));
             }
 
             Console.WriteLine("\nOptions with *()* around it are unavailable to the current user.");
@@ -661,7 +664,7 @@ namespace SecureSoftwareDevProject
             {
 
                 //Pass the filepath and filename to the StreamWriter Constructor
-                StreamWriter sw = new StreamWriter("C:/Users/Liam/Documents/GitHub/SecureSoftwareDevProject/SecureSoftwareDevProject/TestFiles/Test.txt");
+                StreamWriter sw = new StreamWriter(fileName);
 
                 foreach (Car c in cars)
                 {
@@ -722,9 +725,7 @@ namespace SecureSoftwareDevProject
             try
             {
                 //Pass the file path and file name to the StreamReader constructor
-                StreamReader sr = new StreamReader("C:/Users/Liam/Documents/" +
-                    "GitHub/SecureSoftwareDevProject/" +
-                    "SecureSoftwareDevProject/TestFiles/Test.txt");
+                StreamReader sr = new StreamReader(fileName);
 
                 //Continue to read until you reach end of file
                 while (!sr.EndOfStream)
