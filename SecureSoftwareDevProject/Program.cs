@@ -50,7 +50,12 @@ namespace SecureSoftwareDevProject
                     UserName = "ECartman",
                     Password = "Southpark",
                     Position = Role.Employee
-
+                },
+                new UserRole()
+                {
+                    UserName = "DrDoofenshmirtz",
+                    Password = "Evilinc",
+                    Position = Role.Admin
                 }
             };
         }//Creates List of users and roles
