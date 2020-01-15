@@ -17,18 +17,20 @@ namespace SecureSoftwareDevProject
         }
     }
 
-    class Method
+    sealed class Method
     {
+
         //Lists of vehicles
         private List<Car> cars;
         private List<Van> vans;
         private List<Motorbike> motorbikes;
 
         private List<UserRole> userRoles;
-        public UserRole activeUser;
+        private UserRole activeUser;
 
-        private string fileName = @"Test.txt";
+        private readonly string fileName = @"Test.txt";
 
+        private readonly string key = "b14ca5898a4e4133bbce2ea2315a1916";
         private void CreateUsers()
         {
             userRoles = new List<UserRole>()
@@ -36,25 +38,25 @@ namespace SecureSoftwareDevProject
                 new UserRole()
                 {
                     UserName = "JDoe",
-                    Password = "Donedeal",
+                    Password = AesOperation.EncryptString(key, "Donedeal"),
                     Position = Role.Admin
                 },
                 new UserRole()
                 {
                     UserName = "WSmith",
-                    Password = "Freshprince",
+                    Password = AesOperation.EncryptString(key, "Freshprince"),
                     Position = Role.Manager
                 },
                 new UserRole()
                 {
                     UserName = "ECartman",
-                    Password = "Southpark",
+                    Password = AesOperation.EncryptString(key, "Southpark"),
                     Position = Role.Employee
                 },
                 new UserRole()
                 {
                     UserName = "DrDoofenshmirtz",
-                    Password = "Evilinc",
+                    Password = AesOperation.EncryptString(key, "Evilinc"),
                     Position = Role.Admin
                 }
             };
@@ -62,6 +64,8 @@ namespace SecureSoftwareDevProject
 
         public void Login()
         {
+            int tries = 5;
+
             CreateUsers();
 
             for (int i = 0; i < 5; i++)
@@ -73,6 +77,7 @@ namespace SecureSoftwareDevProject
 
                 Console.Write("Password: ");
                 string password = "";
+
                 do
                 {
                     ConsoleKeyInfo key = Console.ReadKey(true);
@@ -96,13 +101,15 @@ namespace SecureSoftwareDevProject
                     }
                 } while (true); //Password Masker
 
-
+                string temp = AesOperation.EncryptString(key, password);
+                
                 foreach (UserRole u in userRoles)
                 {
-                    if(user == u.UserName && password == u.Password)
+                    if(user == u.UserName && temp == u.Password)
                     {
                         Console.Clear();
-                        activeUser = u;
+                        password = null;
+                        temp = null;
                         CreateData();
                         Menu();
                     }
@@ -110,7 +117,9 @@ namespace SecureSoftwareDevProject
 
                 Console.Clear();
 
-                Console.WriteLine("Invalid login please try again\n");
+                tries -= 1;
+
+                Console.WriteLine("Invalid login please try again ({0} tries left)\n", tries);
             }
 
             Console.Write("Credentials entered incorrectly too many times. Press Enter to exit.");
